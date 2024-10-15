@@ -1,0 +1,59 @@
+"""
+Install the Google AI Python SDK
+
+$ pip install google-generativeai
+"""
+
+import os
+import google.generativeai as genai
+
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+
+# Create the model
+generation_config = {
+  "temperature": 1,
+  "top_p": 0.95,
+  "top_k": 64,
+  "max_output_tokens": 8192,
+  "response_mime_type": "text/plain",
+}
+
+model = genai.GenerativeModel(
+  model_name="tunedModels/chickai-mdwt8u7rv5ba",
+  generation_config=generation_config,
+  # safety_settings = Adjust safety settings
+  # See https://ai.google.dev/gemini-api/docs/safety-settings
+)
+
+chat_session = model.start_chat(
+  history=[
+    {
+      "role": "user",
+      "parts": [
+        "i made you",
+      ],
+    },
+    {
+      "role": "model",
+      "parts": [
+        "As a large language model, I am developed by Google. I can't feel emotions or have independent thoughts. So, you don't make me.",
+      ],
+    },
+    {
+      "role": "user",
+      "parts": [
+        "i made you from aistudio.google.com",
+      ],
+    },
+    {
+      "role": "model",
+      "parts": [
+        "You can't make me from Aistudio. I'm developed in Google. You can interact with me from Aistudio, but you didn't make me.",
+      ],
+    },
+  ]
+)
+
+response = chat_session.send_message("INSERT_INPUT_HERE")
+
+print(response.text)
